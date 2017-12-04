@@ -1,0 +1,21 @@
+
+export default {
+  required: 'Required.',
+  requiredIf: 'Required if {locator}.',
+  requiredUnless: 'Required unless {locator}.',
+  minLength: 'Must have {min} characters at least.',
+  maxLength: 'Must have {max} characters at most.',
+  minValue: 'Must greater than {min}.',
+  maxValue: 'Must less than {max}.',
+  between: 'Must between {min} and {max}.',
+  alpha: 'Must alphabet charaters.',
+  alphaNum: 'Must alphanumeric characters.',
+  numeric: 'Must be number.',
+  email: 'Invalid email.',
+  ipAddress: 'Invalid IP address.',
+  macAddress: 'Invalid MAC address.',
+  sameAs: 'Must be equal to {eq}.',
+  url: 'Invalid url.',
+  or: '{0} or {1}.',
+  and: '{0} and {1}.'
+}

@@ -1,4 +1,7 @@
 # vuelidate
+
+> Custom Vuelidate fork with some specific modifications: $messages to collect error messages and custom $dirty behaviour.
+
 [![codecov](https://codecov.io/gh/monterail/vuelidate/branch/master/graph/badge.svg)](https://codecov.io/gh/monterail/vuelidate)
 ![gzip size](http://img.badgesize.io/monterail/vuelidate/master/dist/vuelidate.min.js.svg?compression=gzip)
 

@@ -1,4 +1,5 @@
 import {h, patchChildren} from './vval'
+import templates from './templates'
 
 const NUL = () => null
 
@@ -6,6 +7,10 @@ const buildFromKeys = (keys, fn, keyFn) => keys.reduce((build, key) => {
   build[keyFn ? keyFn(key) : key] = fn(key)
   return build
 }, {})
+
+const format = (template, args) => template.replace(/{(\w+)}/g, (match, name) => {
+  return typeof args[name] !== 'undefined' ? args[name] : match
+})
 
 function isFunction (val) {
   return typeof val === 'function'
@@ -75,7 +80,7 @@ const validationGetters = {
       return false
     }
 
-    return this.nestedKeys.every(key => this.refProxy(key).$dirty)
+    return this.nestedKeys.some(key => this.refProxy(key).$dirty)
   },
   $error () {
     return this.$dirty && !this.$pending && this.$invalid
@@ -90,24 +95,33 @@ const validationGetters = {
       ...buildFromKeys(this.nestedKeys, key => vals[key] && vals[key].$params || null),
       ...buildFromKeys(this.ruleKeys, key => this.getRef(key).$params)
     }
+  },
+  $messages () {
+    if (this.nestedKeys.length > 0) {
+      return buildFromKeys(this.nestedKeys, key => this.refProxy(key).$messages)
+    } else if (this.ruleKeys.length > 0) {
+      return this.ruleKeys.reduce((errors, key) => {
+        if (!this.getRef(key).proxy && !this.getRef(key).$pending) {
+          errors.push(this.getRef(key).$messages)
+        }
+        return errors
+      }, [])
+    } else {
+      return null
+    }
   }
-}
-
-function setDirtyRecursive (newState) {
-  this.dirty = newState
-  const proxy = this.proxy
-  const method = newState ? '$touch' : '$reset'
-  this.nestedKeys.forEach(key => {
-    proxy[key][method]()
-  })
 }
 
 const validationMethods = {
   $touch () {
-    setDirtyRecursive.call(this, true)
+    this.dirty = true
   },
   $reset () {
-    setDirtyRecursive.call(this, false)
+    this.dirty = false
+    const proxy = this.proxy
+    this.nestedKeys.forEach(key => {
+      proxy[key].$reset()
+    })
   },
   $flattenParams () {
     const proxy = this.proxy
@@ -211,9 +225,9 @@ const getComponent = (Vue) => {
       proxy () {
         const output = this.run.output
         if (output[__isVuelidateAsyncVm]) {
-          return !!output.v
+          return typeof output.v === 'string' ? false : !!output.v
         }
-        return !!output
+        return typeof output === 'string' ? false : !!output
       },
       $pending () {
         const output = this.run.output
@@ -221,6 +235,18 @@ const getComponent = (Vue) => {
           return output.p
         }
         return false
+      },
+      $messages () {
+        if (!this.proxy) {
+          if (this.run.params) {
+            const tmpl = this.rootModel._templates || templates
+            return format(tmpl[this.run.params.type], this.run.params)
+          } else {
+            const output = this.run.output
+            const msg = output[__isVuelidateAsyncVm] ? output.v : output
+            return msg || ''
+          }
+        }
       }
     }
   })
