@@ -17,7 +17,8 @@ describe('#95 $v.$touch() does not cascade properly to nested array elements', (
     expect(vm.$v.items.$each[0].$dirty).to.be.false
     expect(vm.$v.items.$each[1].$dirty).to.be.false
     vm.$v.$touch()
-    expect(vm.$v.items.$each[0].$dirty).to.be.true
-    expect(vm.$v.items.$each[1].$dirty).to.be.true
+    expect(vm.$v.$dirty).to.be.true
+    expect(vm.$v.items.$each[0].$dirty).to.be.false
+    expect(vm.$v.items.$each[1].$dirty).to.be.false
   })
 })

@@ -321,7 +321,7 @@ describe('Validation plugin', () => {
           }
         })
         vm.$v.nested.value1.$touch()
-        expect(vm.$v.nested.$dirty).to.be.false
+        expect(vm.$v.nested.$dirty).to.be.true
       })
       it('should have nested.$dirty true when all values are $dirty', () => {
         const vm = new Vue({
@@ -348,8 +348,10 @@ describe('Validation plugin', () => {
           }
         })
         vm.$v.nested.$touch()
-        expect(vm.$v.nested.value1.$dirty).to.be.true
-        expect(vm.$v.nested.value2.$dirty).to.be.true
+        expect(vm.$v.$dirty).to.be.true
+        expect(vm.$v.nested.$dirty).to.be.true
+        expect(vm.$v.nested.value1.$dirty).to.be.false
+        expect(vm.$v.nested.value2.$dirty).to.be.false
       })
       it('should propagate nested.$reset to all nested values', () => {
         const vm = new Vue({
