@@ -97,17 +97,17 @@ const validationGetters = {
     }
   },
   $messages () {
-    if (this.nestedKeys.length > 0) {
-      return buildFromKeys(this.nestedKeys, key => this.refProxy(key).$messages)
-    } else if (this.ruleKeys.length > 0) {
-      return this.ruleKeys.reduce((errors, key) => {
-        if (!this.getRef(key).proxy && !this.getRef(key).$pending) {
-          errors.push(this.getRef(key).$messages)
-        }
-        return errors
-      }, [])
-    } else {
-      return null
+    if (this.$error) {
+      if (this.nestedKeys.length > 0) {
+        return buildFromKeys(this.nestedKeys, key => this.refProxy(key).$messages)
+      } else if (this.ruleKeys.length > 0) {
+        return this.ruleKeys.reduce((errors, key) => {
+          if (!this.getRef(key).proxy && !this.getRef(key).$pending) {
+            errors.push(this.getRef(key).$messages)
+          }
+          return errors
+        }, [])
+      }
     }
   }
 }
