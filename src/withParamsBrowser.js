@@ -4,11 +4,11 @@
 // fallback to stubbed WithParams on failure.
 
 const root =
-  typeof global !== 'undefined'
-  ? global
-  : typeof window !== 'undefined'
+  typeof window !== 'undefined'
     ? window
-    : {}
+    : typeof global !== 'undefined'
+      ? global
+      : {}
 
 /* istanbul ignore next */
 const fakeWithParams = (paramsOrClosure, maybeValidator) => {
@@ -18,4 +18,6 @@ const fakeWithParams = (paramsOrClosure, maybeValidator) => {
   return paramsOrClosure(() => {})
 }
 
-export const withParams = root.vuelidate ? root.vuelidate.withParams : fakeWithParams
+export const withParams = root.vuelidate
+  ? root.vuelidate.withParams
+  : fakeWithParams

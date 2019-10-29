@@ -27,15 +27,41 @@
           td.table__td
             | A flag representing if the field under validation was touched by the user at least once.
             | Usually it is used to decide if the message is supposed to be displayed to the end user.
-            | Flag is managed manually. You have to use <kbd>$touch</kbd> and <kbd>$reset</kbd> methods
-            | to manipulate it. The <kbd>$dirty</kbd> flag is considered <kbd>true</kbd> if given model was
-            | <kbd>$touch</kbd>ed or <strong>all of it's children</strong> are <kbd>$dirty</kbd>.
+            | You can manage this flag manualy by using <kbd>$touch</kbd> and <kbd>$reset</kbd> methods.
+            | It is set automatically when writing to <kbd>$model</kbd> value.
+            | The <kbd>$dirty</kbd> flag is considered <kbd>true</kbd> if given model was
+            | <kbd>$touch</kbd>ed or <strong><u>all</u> of it's children</strong> are <kbd>$dirty</kbd>.
+        tr.table__tr
+          td.table__td: kbd $anyDirty
+          td.table__td: strong boolean
+          td.table__td
+            | A flag very similar to <kbd>$dirty</kbd>, with one exception.
+            | The <kbd>$anyDirty</kbd> flag is considered <kbd>true</kbd> if given model was
+            | <kbd>$touch</kbd>ed or <strong><u>any</u> of it's children</strong> are <kbd>$anyDirty</kbd>.
+        tr.table__tr
+          td.table__td: kbd $model
+          td.table__td: strong any
+          td.table__td
+            | A reference to the original validated model. Reading this value will always give you exactly the same value
+            | as if you referenced the model directly. That means <kbd>this.$v.value.$model</kbd> is equivalent to
+            | <kbd>this.value</kbd> when read. Writing to that value will
+            | update the model and invoke <kbd>$touch</kbd> method automatically.
+            | This is very useful to use as <kbd>v-model</kbd> payload,
+            | providing a way of automatically marking given field as <kbd>$dirty</kbd> on first touch.
+            | Pairs well with <kbd>.lazy</kbd> modifier.
         tr.table__tr
           td.table__td: kbd $error
           td.table__td: strong boolean
           td.table__td
             | Convenience flag to easily decide if a message should be displayed.
-            | It is a shorthand to <kbd>$invalid && $dirty</kbd>.
+            | Equivalent to <kbd>this.$dirty && !this.$pending && this.$invalid</kbd>.
+        tr.table__tr
+          td.table__td: kbd $anyError
+          td.table__td: strong boolean
+          td.table__td
+            | Convenience flag to easily decide if a message should be displayed. A variant that considers
+            | error to be displayed when itself or <strong>at least one</strong> of its children has <kbd>$error</kbd>
+            | equal to <kbd>true</kbd>.
         tr.table__tr
           td.table__td: kbd $pending
           td.table__td: strong boolean
@@ -53,5 +79,14 @@
           td.table__td: strong object
           td.table__td
             | Holds all validation models of collection validator. Always preserves
-            | the keys of original model, so it can be safely referenced in the <kbd>v-for</kbd>
-            | loop iterating over your data using the same index.
+            | the keys of original model, but also holds additional names for all associated validators
+            | and special values like <kbd>$invalid</kbd>. A special <kbd>$iter</kbd> fields
+            | is preferred for usage inside <kbd>v-for</kbd> directives.
+        tr.table__tr
+          td.table__td: kbd $iter
+          td.table__td: strong object
+          td.table__td
+            | Only present as direct child of <kbd>$each</kbd> objects.
+            | Holds all validation models of collection validator and nothing else.
+            | It can be safely referenced in the <kbd>v-for</kbd> loop iterating over all your model validators.
+            | <br>See <a href="#sub-collections-validation">Collections Validation</a> for usage example.

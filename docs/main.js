@@ -2,9 +2,10 @@ import Vue from 'vue'
 import Validation from '../src/index'
 
 import * as examples from './partials/examples'
+import TreeView from 'vue-json-tree-view'
 import LangSwitcher from './LangSwitcher'
-
 Vue.use(Validation)
+Vue.use(TreeView)
 
 import './docs.scss'
 
@@ -17,7 +18,7 @@ new Vue({
     LangSwitcher,
     ...examples
   },
-  data () {
+  data() {
     return {
       isNavSticky: false,
       firstColor: Math.floor(Math.random() * 255),
@@ -28,30 +29,35 @@ new Vue({
     }
   },
   computed: {
-    gradient () {
+    gradient() {
       return {
-        background: `linear-gradient(to left bottom, hsl(${this.firstColor + SL}) 0%, hsl(${this.secondColor + SL}) 100%)`
+        background: `linear-gradient(to left bottom, hsl(${this.firstColor +
+          SL}) 0%, hsl(${this.secondColor + SL}) 100%)`
       }
     },
-    allHeaders () {
-      return [].slice.call(document.querySelectorAll('section[id], .typo__h2[id]'))
+    allHeaders() {
+      return [].slice.call(
+        document.querySelectorAll('section[id], .typo__h2[id]')
+      )
     }
   },
+  mounted() {
+    this.adjustNav()
+    window.addEventListener('scroll', this.requestFrame)
+  },
   methods: {
-    selectLanguage (lang) {
+    selectLanguage(lang) {
       this.markupLanguage = lang
     },
-    adjustNav () {
+    adjustNav() {
       const $nav = document.getElementById('main-nav')
       const navTop = $nav.getBoundingClientRect().top
       this.isNavSticky = navTop < 0
 
-      const found = this.allHeaders.findIndex(e => {
+      const found = this.allHeaders.findIndex((e) => {
         const top = e.getBoundingClientRect().top
-        return top > 0
+        return top > 20
       })
-
-      console.log(this.allHeaders)
 
       const head = found === -1 ? this.allHeaders.length - 1 : found - 1
 
@@ -66,7 +72,7 @@ new Vue({
         }
       }
     },
-    requestFrame () {
+    requestFrame() {
       if (!this._frameRequested) {
         this._frameRequested = true
         window.requestAnimationFrame(() => {
@@ -75,9 +81,5 @@ new Vue({
         })
       }
     }
-  },
-  mounted () {
-    this.adjustNav()
-    window.addEventListener('scroll', this.requestFrame)
   }
 })
