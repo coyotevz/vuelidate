@@ -1,4 +1,3 @@
-
 export default {
   required: 'Required.',
   requiredIf: 'Required if {locator}.',

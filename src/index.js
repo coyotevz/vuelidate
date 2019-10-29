@@ -1,4 +1,4 @@
-import {h, patchChildren} from './vval'
+import { h, patchChildren } from './vval'
 import templates from './templates'
 
 const NIL = () => null
