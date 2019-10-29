@@ -3,7 +3,25 @@
     p.typo__p
       | For each value you want to validate, you have to create a key inside <kbd>validations</kbd> options.
       | You can specify when input becomes dirty by using appropriate event on your input box.
+    p.typo__p
+      | Note that in this example, the red border, red text, and error message visibility are driven by the presence or absence of the <kbd>form-group--error</kbd> class on the surrounding <kbd>div</kbd>. 
+      | Any markup relating to validation errors will show on initial load unless using a method like this, or by using validations without v-model (next section).
     +example('ExampleBasic')
+
+  +subsection('Without v-model')
+    p.typo__p
+      | In case you don't want to modify your model directly,
+      | you can still use separate <kbd>:input</kbd> and <kbd>@event</kbd> bindings.
+      | This is especially useful if you are using data from external source, like Vuex store or props.
+      | In that case you have to manually take care of setting the <kbd>$dirty</kbd>
+      | by calling <kbd>$touch()</kbd> method when appropriate.
+    +example('ExampleEvent')
+
+  +subsection('Form submission')
+    p.typo__p
+      | A common thing to do with validated forms is to check their validity before submission. You can accomplish this
+      | easily by checking for <kbd>$invalid</kbd> state before sending any requests.
+    +example('ExampleSubmit')
 
   +subsection('Contextified validators')
     p.typo__p
@@ -13,9 +31,18 @@
   +subsection('Data nesting')
     p.typo__p
       | You can nest validators to match your data as deep as you want.
-      | Parent validator errors out when any of its children reports an error.
+      | Parent validator is <kbd>$invalid</kbd> when any of its children validators reports an <kbd>$invalid</kbd> state.
       | This might be very useful for overall form validation.
     +example('ExampleNested')
+
+  +subsection('$error vs $anyError')
+    p.typo__p
+      | There are two common ways of considering if an error should be displayed. It is important to understand which one
+      | suits your use case better. You can use either <kbd>$error</kbd> or <kbd>$anyError</kbd> validation property,
+      | or by extension, the low-level variants: <kbd>$dirty</kbd> or <kbd>$anyDirty</kbd>.
+      | Note that this documentation uses mainly <kbd>$error</kbd> variant in it's examples, but the choice is yours to make.
+
+    +example('ExampleAnyDirty')
 
   +subsection('Validation Groups')
     p.typo__p
@@ -73,7 +100,7 @@
   +subsection('Dynamic validation schema')
     p.typo__p
       | Validations schema can be a function, which will make it dynamic and possibly
-      | dependant on your model's data. Recomputations will happend automatically as if
+      | dependant on your model's data. Recomputations will happen automatically as if
       | it was a computed value. Validation's <kbd>$dirty</kbd> state will be preserved
       | as long as the key name won't change or disappear.
     +example('ExampleDynamic')
